@@ -12,3 +12,12 @@
 
 
 ![image](https://user-images.githubusercontent.com/94349690/202908466-780fd680-958a-479f-9296-f4a2568c9713.png)
+
+
+
+고객판매조회
+![image](https://user-images.githubusercontent.com/94349690/202908666-dd78df81-0d5b-4caf-9ba4-f8f403946f27.png)
+
+월별실적조회
+![image](https://user-images.githubusercontent.com/94349690/202908721-51be9d6d-7660-418e-b4d7-2868cc89e496.png)
+
