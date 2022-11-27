@@ -1,0 +1,145 @@
+@charset "UTF-8";
+.center h4{
+	font-size: 30px
+}
+
+/* .center{ */
+/* 	    position: absolute; */
+/*     top: 38%; */
+/*     left: 50%; */
+/*     transform: translate(-50%, -50%); */
+/*     width: 89%; */
+/*     background: #fafeff; */
+/*     padding: 50px; */
+/*     font-size: 18px; */
+/*     float: left; */
+/*     height: 649px; */
+/*     overflow: hidden; */
+    
+/* }  */
+
+
+
+.center {
+    position: absolute;
+    top: 49%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 89%;
+    background: white;;
+    padding: 50px;
+    font-size: 18px;
+    float: left;
+    height: 800px;
+    overflow: hidden;
+
+}
+
+.memberList_searchTable{
+	position: relative;
+	background: #f0f6f9;
+	border: 2px solid #31444d;
+	height: 125px;
+}
+
+.memberList_logo img{
+	width: 30px;
+	height: 30px;
+}
+
+
+.memberList_searchTable i{
+	color :red;
+}
+.admin_memberList{
+	position: relative;
+	background: #fcfeff;
+	float:left;
+	width: 88%;
+	height: 1100px;
+}
+
+.memberList_list{
+	overflow-x: hidden;
+	
+	padding-top: 30px;
+	overflow:scroll
+}
+
+
+
+.memberList_listTable{
+    display: inline-block;
+	height: 585px;    
+	overflow-y: inital; 
+	
+	border-collapse: collapse;
+    border-top: 3px solid #168;
+}
+
+.memberList_listTable th{
+    color: #080807;
+    background: #f0f6f9;
+    text-align: center;	
+    padding:11px;
+    
+}
+
+
+
+.memberList_listTable th, .memberList_listTable td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    width: 800px;
+    height: 32px;
+    text-align: center;
+}
+
+.memberList_btn{
+	float: center;
+	width: 132px;
+    height: 33px;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+
+.memberList_listTable .lo_left{
+	text-align: left;
+	width: 206px;
+}
+
+.memberList_listTable .lo_mid{
+	text-align: center;
+	width: 231px;
+}
+
+
+
+.memberList_searchTable .thead tr td:first-child {
+	padding-right:80px
+}
+
+.memberList_searchTable .thead input {
+    font-size: 23px;
+    height: 38px;
+}
+
+
+.search_btn{
+/* 	background: url("images/search.png"); */
+	width: 32px;
+	height: 32px;
+}
+.memberList_thead{
+	
+	width:100%;
+}
+
+
+
+
+
+
+
+

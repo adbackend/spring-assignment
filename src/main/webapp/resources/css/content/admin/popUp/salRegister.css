@@ -1,0 +1,166 @@
+@charset "UTF-8";
+
+.container{
+	background: #dfecf5;
+}
+
+
+.chm_table{
+	font-size:50px;
+	
+}
+
+.memberList_list{
+		padding-top: 30px;
+
+}
+
+.memberList_listTable{
+	border-collapse: collapse;
+    border-top: 3px solid #168;
+}
+
+
+
+
+.memberList_listTable th{
+    color: #080807;
+    background: #f0f6f9;
+    text-align: center;	
+    padding:16px;
+	font-size:23px;
+	width:300px; 
+	text-align: center;   
+}
+
+.memberList_listTable td{
+	font-size:24px;
+	text-align: center;
+}
+
+.memberList_listTable th, .memberList_listTable td{
+	padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.ch_table tr{
+	font-size:34px;
+
+}
+
+/* input { */
+/* 	float:right; */
+/* 	margin:30px; */
+/* 	font-size:20px; */
+/* } */
+
+.tableOne{
+	background-color: #dfecf5;
+	font-size: 20px;
+	width: 100%;
+}
+
+.tableOne i{
+	color :red;
+}
+
+.tableT{
+/* 	background-color: yellow; */
+	border: 3px solid #ddd;
+	width: 100%;
+}
+
+.tableOne .blank_key{
+/* 	background-color: yellow; */
+    width: 133px;
+    height: 25px;
+    font-size: 18px;
+    
+}
+
+
+.tableT_title{
+	font-size: 20px;
+}
+
+.pntReadOnly{
+	background-color: #e8e9ed;
+}
+
+.tableT td{
+	padding-right: 15px;
+	text-align: right;
+}
+
+.cardB{
+/* 	width: 30px; */
+}
+
+.searchbb{
+	    font-size: 19px;
+}
+
+.footerBtn{
+	width: 100%;
+	margin-top: 30px;
+}
+.footerBtn input{
+	    padding: 16px;
+	    font-size: 19px;
+	    padding-right: 30px;
+}
+
+.tfirst{
+	background-color: yellow;
+}
+
+.tbodySal input{
+	font-size: 20px;
+    width: 117px;
+    height: 24px;
+    text-align: right;
+}
+
+.tableT input{
+	font-size: 20px;
+	text-align: right;
+}
+
+.searchBtn {
+    width: 28px;
+    top: 10px;
+    right: 12px;
+    height: 25px;
+    margin: -4px;
+}
+
+
+.crdCOS{
+	font-size: 20px;
+	
+}
+
+.tCent{
+	padding-right: 368px;
+}
+
+#sumSal{
+		text-align: right;
+	
+}
+
+
+#saBtn{
+	font-size: 38px;
+    width: 65px;
+    height: 52px;
+}
+
+
+
+
+
+#lo_right{
+	text-align: right;
+	background-color: yellow;
+}

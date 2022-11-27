@@ -1,0 +1,57 @@
+@charset "UTF-8";
+
+
+.cdNmSearch{
+	
+	border: 2px solid #31444d;
+	background: #dfe6f7;
+	font-size: 20px;
+	width: 901px;
+	height:120px;
+}
+
+
+/* .cdNmSearch input{ */
+/* 	width:240px; */
+/* 	height:40px; */
+/* 	font-size:20px; */
+/* } */
+
+.memberList_list{
+	padding-top: 27px;
+    margin-left: 1px;
+    width: 847px;
+    font-size: 20px;
+    text-align: center;
+}
+
+.memberList_listTable{
+    border-collapse: collapse;
+    border-top: 3px solid #168;
+    width: 700px;
+    font-size: 20px;
+    text-align: center;
+    width: 900px;
+}
+
+.memberList_listTable th{
+    color: #080807;
+    background: #f0f6f9;
+    text-align: center;	
+    padding:11px;
+	font-size:24px;
+}
+
+input{
+	font-size:27px;
+	margin-top:30px;
+}
+
+.cdSearch{
+	font-size: 25px;
+}
+
+.textVal{
+    width: 264px;
+    height: 39px;
+}

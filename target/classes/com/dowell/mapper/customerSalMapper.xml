@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="customerSalMapper">
+	
+	<!-- 고객판매관리 전체 검색 -->
+	<!-- 
+
+	<select id="custSearchList" parameterType="CustSalSearchDTO" resultType="CustSalSearchVO">
+		SELECT 
+			salMT.PRT_CD 								/*매장코드*/
+			,prtMT.PRT_NM 								/*매장명*/
+			,(SUBSTR(salMT.SAL_DT,1,4)||'-'||SUBSTR(salMT.SAL_DT,5,2)||'-'||SUBSTR(salMT.SAL_DT,7)) AS SAL_DT  /*1 판매일자*/ 
+			,salMT.CUST_NO								/*2 고객번호*/
+			,custMT.CUST_NM 							/*3 고객명*/
+			,salMT.SAL_NO								/*4 판매번호*/
+			,salMT.SAL_TP_CD 							/* 판매구분코드 sal, rtn*/
+			,joinDT.sumSal_qty AS SUM_SAL_QTY			/*5 수량*/
+			,joinDT.sumSal_amt AS SUM_SAL_AMT			/*6 금액*/
+			
+			,salMT.CSH_STLM_AMT 						/*7 현금*/
+			,salMT.CRD_STLM_AMT							/*8 카드*/
+			,salMT.PNT_STLM_AMT 						/*9 포인트*/
+			
+			,userMT.USER_NM AS USER_NM	 										/*10 최초등록자*/
+			,TO_CHAR(salMT.FST_REG_DT,'YYYY-MM-DD') AS FST_REG_DT				/*11 최초등록일자*/
+			
+		FROM CS_SAL01_MT salMT  /*고객판매*/
+			LEFT JOIN CS_CUST01_MT custMT ON custMT.CUST_NO = salMT.CUST_NO 	/*고객관리+고객판매*/
+			LEFT JOIN MA_PRT_MT prtMT ON prtMT.PRT_CD = salMT.PRT_CD 			/*고객+매장*/
+			LEFT JOIN MA_USER_MT userMT ON userMT.USER_ID = salMT.FST_USER_ID   /*사용자*/
+			LEFT JOIN (
+		            SELECT   
+		                    PRT_CD
+		                    ,SAL_NO
+		                    ,SAL_DT
+		                    ,SUM(SAL_QTY) AS sumSal_qty   /*총수량*/
+		                    ,SUM(SAL_AMT) AS sumSal_amt   /*총판매금액*/
+		            FROM CS_SAL01_DT
+		                    GROUP BY PRT_CD,SAL_NO,SAL_DT
+		            )joinDT ON salMT.PRT_CD=joinDT.PRT_CD AND salMT.SAL_NO=joinDT.SAL_NO AND  salMT.SAL_DT=joinDT.SAL_DT  /*고객판매 + 고객판매상세*/
+		WHERE 1=1 
+		<if test="CUST_NO != '' and CUST_NO != null ">
+			AND custMT.CUST_NO = #{CUST_NO}
+		</if>
+		<if test="PRT_CD != '' and PRT_CD != null">
+			AND salMT.PRT_CD = #{PRT_CD}
+		</if>
+		<if test="(startDate != '' or startDate != null) and (endDate != '' or endDate != null)">
+			AND (salMT.SAL_DT BETWEEN #{startDate} AND #{endDate})
+		</if>
+		
+		ORDER BY salMT.SAL_DT DESC, salMT.SAL_NO DESC
+	</select>
+	 -->
+    <select id="custSearchList" parameterType="CustSalSearchDTO" resultType="CustSalSearchVO">
+			WITH TBL1 AS(
+					SELECT 
+						salMT.PRT_CD 			                                                                 AS PRT_CD		       /*  매장코드  */
+						,prtMT.PRT_NM 			                                                                 AS PRT_NM			   /*  매장명  */
+						,(SUBSTR(salMT.SAL_DT,1,4)||'-'||SUBSTR(salMT.SAL_DT,5,2)||'-'||SUBSTR(salMT.SAL_DT,7))  AS SAL_DT  		   /*  판매일자1  */ 
+						,salMT.CUST_NO			                                                                 AS CUST_NO			   /*  고객번호2  */
+						,custMT.CUST_NM 		                                                                 AS CUST_NM			   /*  고객명3  */
+						,salMT.SAL_NO			                                                                 AS SAL_NO			   /*  판매번호4  */
+						,salMT.SAL_TP_CD 		                                                                 AS SAL_TP_CD		   /*  판매구분코드 sal, rtn  */
+			                                                                                                                           
+			            ,SUM(salDT.SAL_QTY) 	                                                                 AS SAL_QTY   		   /*  총판매수량5  */
+			            ,SUM(salDT.SAL_AMT) 	                                                                 AS SAL_AMT            /*  총판매금액6  */
+						
+						,salMT.CSH_STLM_AMT	 	                                                                 AS CSH_STLM_AMT    /*  현금7  */
+						,salMT.CRD_STLM_AMT		                                                                 AS CRD_STLM_AMT    /*  카드8  */
+						,salMT.PNT_STLM_AMT	                                                                     AS PNT_STLM_AMT    /*  포인트9  */
+						,userMT.USER_NM                                                                          AS USER_NM	 		/*  최초등록자10  */
+						,TO_CHAR(salMT.FST_REG_DT,'YYYY-MM-DD')                                                  AS FST_REG_DT	    /*  최초등록일자11  */
+			
+					FROM CS_SAL01_MT salMT  /*고객판매*/
+						INNER JOIN CS_CUST01_MT custMT ON custMT.CUST_NO = salMT.CUST_NO 	 /*고객관리+고객판매*/
+						INNER JOIN MA_PRT_MT prtMT ON prtMT.PRT_CD = salMT.PRT_CD 			 /*고객+매장*/
+						INNER JOIN MA_USER_MT userMT ON userMT.USER_ID = salMT.FST_USER_ID   /*사용자*/
+			            INNER JOIN CS_SAL01_DT salDT 
+			                            ON  salDT.PRT_CD = salMT.PRT_CD /*판매상세*/
+			                            AND salDT.SAL_DT = salMT.SAL_DT
+			                            AND salDT.SAL_NO = salMT.SAL_NO
+					WHERE 1=1 
+					
+					<if test="CUST_NO != '' and CUST_NO != null ">
+						AND custMT.CUST_NO = #{CUST_NO}   /*고객번호*/
+					</if>
+					<if test="PRT_CD != '' and PRT_CD != null">
+						AND salMT.PRT_CD = #{PRT_CD}      /*매장코드*/
+					</if>
+					<if test="(startDate != '' or startDate != null) and (endDate != '' or endDate != null)">
+						AND (salMT.SAL_DT BETWEEN #{startDate} AND #{endDate})  /*판매일자*/
+					</if>			  
+			           
+			            GROUP BY 
+			           	     salMT.PRT_CD 				/*  매장코드  */
+						     ,prtMT.PRT_NM 				/*  매장명  */
+						     ,salMT.SAL_DT              /*  판매일자1  */ 
+						     ,salMT.CUST_NO				/*  고객번호2  */
+						     ,custMT.CUST_NM 			/*  고객명 3  */
+						     ,salMT.SAL_NO				/*  판매번호 4  */
+						     ,salMT.SAL_TP_CD 			/*  판매구분코드  sal, rtn   */		
+						     ,salMT.CSH_STLM_AMT 		/*  현금7  */
+						     ,salMT.CRD_STLM_AMT		/*  카드8  */
+						     ,salMT.PNT_STLM_AMT 		/*  포인트9  */
+						     ,userMT.USER_NM			/*  최초등록자10  */
+						     ,salMT.FST_REG_DT	        /*  최초등록일자11  */
+			         
+			         ORDER BY   salMT.SAL_DT DESC  /*판매일자*/
+			         		  , salMT.SAL_NO DESC  /*판매번호*/
+			         ),
+				TBL2 AS (
+				    SELECT 
+				            '합계' AS TOTAL_TITLE          /* 매장코드     합계영역*/
+							,'' 				           /* 매장명        합계영역*/
+							,''             	           /* 1 판매일자   합계영역*/ 
+							,''					           /* 2 고객번호   합계영역*/
+							,''					           /* 3 고객명      합계영역*/
+							,0					           /* 4 판매번호   합계영역*/
+							,''					           /*  판매구분코드 sal, rtn*/
+				            ,SUM(CASE WHEN SAL_TP_CD = 'SAL' THEN SAL_QTY
+				                      WHEN SAL_TP_CD = 'RTN' THEN SAL_QTY * -1
+				                      ELSE 0
+				                      END
+				            )         /* 5총판매수량 */
+				            ,SUM(CASE WHEN SAL_TP_CD = 'SAL' THEN SAL_AMT
+				                      WHEN SAL_TP_CD = 'RTN' THEN SAL_AMT * -1
+				                      ELSE 0
+				                      END
+				            )  	   /* 6총판매금액 */            
+				            ,SUM(CASE WHEN SAL_TP_CD = 'SAL' THEN CSH_STLM_AMT
+				                      WHEN SAL_TP_CD = 'RTN' THEN CSH_STLM_AMT * -1
+				                      ELSE 0
+				                      END
+				            )    /* 7 총현금 */                 
+				            ,SUM(CASE WHEN SAL_TP_CD = 'SAL' THEN CRD_STLM_AMT
+				                      WHEN SAL_TP_CD = 'RTN' THEN CRD_STLM_AMT * -1
+				                      ELSE 0
+				                      END
+				            )    /* 8 총카드금액 */
+				            ,SUM(CASE WHEN SAL_TP_CD = 'SAL' THEN PNT_STLM_AMT
+				                      WHEN SAL_TP_CD = 'RTN' THEN PNT_STLM_AMT * -1
+				                      ELSE 0
+				                      END
+				            )     /* 9 총포인트  */
+							,'' 			            /* 10 최초등록자  */
+							,''				            /* 11 최초등록일자  */
+				     FROM TBL1
+				)
+			SELECT * FROM TBL1   /*판매목록 테이블*/
+			  UNION ALL  
+			SELECT * FROM TBL2   /*판매합계 테이블*/
+    </select>	
+	
+	<!-- 
+		판매상세조회 팝업창 구매목록
+		 {PRT_CD, SAL_DT, SAL_NO} 가져와서 조회
+	 -->
+	<select id="custSalDetailList" parameterType="hashMap" resultType="CsSal01DtVO">
+		SELECT 
+			ROW_NUMBER() OVER(ORDER BY salDT.SAL_SEQ DESC) AS RN 	/*1 순번ROWNUM*/
+			,salDT.SAL_SEQ 					/*판매일렬번호*/
+			,salDT.PRT_CD					/*매장코드*/
+			,salDT.SAL_DT					/*판매일자*/
+			,salDT.SAL_NO					/*판매번호*/
+			,salDT.PRD_CD					/*2상품코드*/
+			,prdMt.PRD_NM 					/*3상품명*/
+			,salDT.SAL_QTY					/*4판매수량*/
+			,salDT.SAL_VOS_AMT				/*5판매공급가액*/
+			,salDT.SAL_VAT_AMT				/*6판매부가세액*/
+			,salDT.SAL_AMT					/*7판매금액*/
+		FROM CS_SAL01_DT salDT 				/*고객판매 상세*/
+			LEFT JOIN MA_PRD01_MT prdMt ON prdMt.PRD_CD = salDT.PRD_CD 	/*상품관리 테이블*/
+		WHERE salDT.PRT_CD = #{PRT_CD} 		/*매장코드*/
+			AND salDT.SAL_DT = #{SAL_DT}  	/*판매일자*/
+			AND salDT.SAL_NO = #{SAL_NO} 	/*팬매번호*/
+		ORDER BY RN ASC
+	</select>
+	
+	
+	<!-- 
+		SAL인데 반품목록인지 판별 
+		0이면 반품된상품x, 1이면 반품된 상품
+	 -->
+	<select id="salReCheck" parameterType="hashMap" resultType="CsSal01MtVO">
+		SELECT 
+			CUST_NO  				  /*고객번호*/
+			,SAL_NO 				  /*판매번호*/
+			,SAL_TP_CD 				  /*판매구분코드*/
+			,ORG_SHOP_CD 			  /*원매장코드*/
+			,ORG_SAL_DT 			  /*원판매일자*/
+			,ORG_SAL_NO				  /*원판매번호*/
+		FROM CS_SAL01_MT salMT  /*고객판매 테이블*/
+			WHERE 1=1 
+		AND ORG_SHOP_CD = #{PRT_CD}    /*원매장코드*/
+		AND ORG_SAL_DT = #{SAL_DT}     /*원판매일자*/
+		AND ORG_SAL_NO = #{SAL_NO}     /*원판매번호*/
+	</select>
+	
+	
+	<!-- 
+		 매장 재고조회
+	 	 상품코드+매장코드를 파라미터로 받아옴
+	 -->
+	 	 
+	 <select id="ivcoSearch" parameterType="SdIvco01MtVO" resultType="SdIvco01MtVO">
+	 	SELECT 
+			ivco01Mt.PRT_CD 		/*매장코드*/
+			,ivco01Mt.PRD_CD 		/*상품코드*/
+			,prd01Mt.PRD_NM 		/*상품명*/
+			,prd01Mt.PRD_TP_CD 		/*상품유형코드  10: 본품, 20: 견본품*/
+			,prd01Mt.PRD_SS_CD 		/*상품상태코드   R: 판매, C: 해지 */
+			,ivco01Mt.IVCO_QTY 		/*재고수량*/
+			,prd01Mt.PRD_CSMR_UPR 	/*상품소비자단가*/
+		FROM SD_IVCO01_MT ivco01Mt 	/*매장현재고*/
+			INNER JOIN MA_PRD01_MT prd01Mt ON prd01Mt.PRD_CD = ivco01Mt.PRD_CD /*매장현재고 + 상품관리 */
+		WHERE 1=1  
+			AND ivco01Mt.PRT_CD =#{PRT_CD}
+			AND (
+					ivco01Mt.PRD_CD LIKE '%' || #{PRD_CD} || '%' 
+						OR 
+					prd01Mt.PRD_NM  LIKE '%' || #{PRD_CD} || '%'
+				)
+		ORDER BY ivco01Mt.PRD_CD ASC
+	 </select>
+	 
+	 <!-- 
+	 		수금등록
+	 		CS_SAL01_MT 테이블
+	  -->
+ 	<insert id="createCsSalMt" parameterType="CsSal01MtVO">
+ 		
+ 		<!-- 판매번호(SAL_NO) return 값 처리 -->
+ 		<selectKey keyProperty="SAL_NO" resultType="Integer" order="BEFORE">
+			SELECT NVL(MAX(SAL_NO),0)+1									
+			FROM CS_SAL01_MT
+			WHERE PRT_CD = #{PRT_CD} 
+			AND SAL_DT = TO_CHAR(SYSDATE,'yyyyMMdd')
+ 		</selectKey>
+ 	
+		INSERT INTO CS_SAL01_MT
+							(
+										PRT_CD					    /*매장코드		1*/
+										,SAL_DT					    /*판매일자		2 */
+										,SAL_NO					    /*판매번호		3 */
+										,SAL_TP_CD				    /*판매구분코드  	4 */
+										,TOT_SAL_QTY		        /*총판매수량	  	5 */
+										,TOT_SAL_AMT			    /*총판매금액	  	6*/
+										,TOT_VOS_AMT			    /*총 공급가액    	7 */
+										,TOT_VAT_AMT			    /*총 부가세액     	8 */
+										,CSH_STLM_AMT			    /*현금결제금액    	9 */
+										,CRD_STLM_AMT			    /*카드결제금액    	10 */	
+										,PNT_STLM_AMT			    /*포인트사용금액  11 */
+										,CUST_NO				    /*고객번호		12 */
+										,CRD_NO					    /*카드번호		13 */
+										,VLD_YM					    /*카드 유효일자	14 */
+										,CRD_CO_CD				    /*카드회사		15 */
+										                            
+										,FST_REG_DT				    /*최초등록일자	16*/	
+										,FST_USER_ID			    /*최초등록자		17*/	
+										
+										,LST_UPD_DT				    /*최종수정일자	18*/
+										,LST_UPD_ID				    /*최종수정자		19*/
+										
+										,ORG_SHOP_CD  				/*원매장코드*/
+										,ORG_SAL_DT					/*원판매일자*/
+										,ORG_SAL_NO					/*원판매번호*/
+							)
+					VALUES(
+										#{PRT_CD}					/*매장코드		1 */
+										,#{SAL_DT}					/*판매일자		2 */
+										,#{SAL_NO}					/*판매번호		3 */
+										,#{SAL_TP_CD}				/*판매구분코드	4 */
+										,#{TOT_SAL_QTY}				/*총판매수량		5 */
+										,#{TOT_SAL_AMT}				/*총판매금액		6*/
+										,#{TOT_VOS_AMT}				/*총 공급가액		7 */
+										,#{TOT_VAT_AMT}				/*총 부가세액		8 */
+										,#{CSH_STLM_AMT}			/*현금결제금액	9 */
+										,#{CRD_STLM_AMT}			/*카드결제금액	10 */	
+										,#{PNT_STLM_AMT}			/*포인트사용금액	11 */
+										
+										,#{CUST_NO}					/*고객번호		12 */
+										,#{CRD_NO}					/*카드번호		13 */
+										,#{VLD_YM}					/*카드 유효일자	14 */
+										,#{CRD_CO_CD} 				/*카드회사		15 */
+										
+										,SYSDATE 					/*최초등록일자	16*/	
+										,#{FST_USER_ID} 			/*최초등록자		17*/
+											
+										,SYSDATE 					/*최종수정일자	18*/
+										,#{LST_UPD_ID}				/*최종수정자		19*/
+										
+										,#{ORG_SHOP_CD, jdbcType=VARCHAR}  /*원매장코드*/
+										,#{ORG_SAL_DT, jdbcType=VARCHAR}   /*원판매일자*/
+										,#{ORG_SAL_NO, jdbcType=VARCHAR}   /*원판매번호*/
+						  )
+	</insert> 	
+	
+	<!-- 상품조회 
+		 합계 계산을 위해 '상품소비자단가'를 가져와서 계산할것임
+	-->
+	<select id="getProducts" parameterType="java.util.List" resultType="MaPrdMt">
+		SELECT 
+			PRD_CD			/*상품코드*/
+			,PRD_NM			/*상품명*/
+			,PRD_TP_CD		/*상품유형코드 		10: 본품, 20: 견본품*/
+			,PRD_CSMR_UPR	/*상품소비자단가 		int*/
+			,PRD_PCH_UPR	/*상품매입단가 		int*/
+			,TAX_CS_CD		/*세금분류코드 		30 : 과세, 31: 면세-우리는 다 과세*/
+			,PRD_SS_CD		/*상품상태코드 		R: 판매, C: 해지, */
+			,FST_REG_DT		/*최초등록일자*/
+			,FST_USER_ID	/*최초등록자*/
+			,LST_UPD_DT		/*최종수정일자*/
+			,LST_UPD_ID		/*최종수정자*/
+		
+		FROM MA_PRD01_MT 
+			WHERE PRD_CD IN
+				(
+				<foreach collection="list" item="prdCd" separator=",">
+					#{prdCd}    		/*상품코드*/
+				</foreach>
+				)
+	</select>
+		
+		<!-- DT테이블 상품들 등록 -->
+	 	<insert id="createCsSal01Dt" parameterType="CsSal01DtVO">
+ 	
+		INSERT INTO CS_SAL01_DT(
+						PRT_CD					/*1매장코드*/ 
+						,SAL_DT					/*2판매일자 */ 
+						,SAL_NO					/*3판매번호 */
+						,SAL_SEQ				/*4판매일련번호 */
+						,PRD_CD					/*5상품코드 */
+						,PRD_CSMR_UPR			/*6소비자가 */
+						,SAL_QTY				/*7판매수량 */
+						,SAL_AMT				/*8판매금액 */
+						,SAL_VOS_AMT			/*9판매공급가액 */
+						,SAL_VAT_AMT			/*10판매부가세액*/
+						,FST_REG_DT				/*11최초등록일자*/
+						,FST_USER_ID			/*12최초등록자*/
+						,LST_UPD_DT				/*13최종수정일자*/
+						,LST_UPD_ID 			/*14최종수정자*/
+				)	
+		VALUES (
+						#{PRT_CD} 			/*1매장코드*/
+						,#{SAL_DT} 			/*2판매일자*/
+						,#{SAL_NO} 			/*3판매번호*/
+						,(SELECT NVL(MAX(SAL_SEQ),0)
+						  				  FROM CS_SAL01_DT 
+							  			  WHERE 1=1
+							  			  	 AND PRT_CD = #{PRT_CD}
+							  				 AND SAL_DT = TO_CHAR(SYSDATE,'yyyyMMdd')
+							  				 AND SAL_NO = #{SAL_NO}) +1 					/*4판매일련번호 */
+						,#{PRD_CD} 			/*5상품코드*/
+						,#{PRD_CSMR_UPR} 	/*6소비자단가*/
+						,#{SAL_QTY} 		/*7판매수량*/
+						,#{SAL_AMT} 		/*8판매금액*/
+						,#{SAL_VOS_AMT} 	/*9판매공급가액*/
+						,#{SAL_VAT_AMT} 	/*10판매부가세액*/
+						,SYSDATE 			/*11최초등록일자*/
+						,#{FST_USER_ID} 	/*12최초등록자*/
+						,SYSDATE 			/*13최종수정일자*/
+						,#{LST_UPD_ID} 		/*14최종수정자*/
+				)
+	</insert>
+	
+	
+	
+	<!-- 재고 업데이트 처리
+		 구매시 상품에 대한 재고 - 처리
+	 -->
+	 <!-- 
+	<update id="createSdIvco01Mt" parameterType="SdIvco01MtVO">
+		UPDATE SD_IVCO01_MT
+			SET
+				IVCO_QTY = IVCO_QTY - #{QTY}  	/*재고수량*/
+				,LST_UPD_DT = SYSDATE           /*최종수정일자*/
+				,LST_UPD_ID = #{LST_UPD_ID}	   	/*최종수정자*/		
+			WHERE 1=1
+				AND PRT_CD = #{PRT_CD}    		/*매장코드*/
+				AND PRD_CD = #{PRD_CD}    		/*상품코드*/
+	</update>
+	  -->
+	
+	<!-- 회원의 포인트 조회 -->
+	<select id="getCsCust01Mt" parameterType="String" resultType="CsCust01MtVO">
+		SELECT 
+				CUST_NO	 		/*고객번호*/
+				,TOT_PNT		/*총포인트*/
+				,RSVG_PNT		/*적립포인트*/
+				,US_PNT			/*사용포인트*/
+				,AVB_PNT		/*가용포인트*/
+				,HNDC_PNT		/*수기포인트*/
+				,FST_REG_DT		/*최초등록일자*/
+				,FST_USER_ID	/*최초등록자*/
+				,LST_UPD_DT		/*최종수정일자*/
+				,LST_UPD_ID		/*최종수정자*/
+
+		FROM CS_CUST_PNT_M 
+		WHERE CUST_NO = #{custNo}
+	</select>
+	
+	<!-- 	포인트적립 이력 추가 -->
+	<insert id="createCustPntD" parameterType="CustPntD">
+		INSERT INTO CS_CUST_PNT_D (
+										CUST_NO		   	/*고객번호*/
+										,ST_DT			/*기준일자*/
+										,PNT_SEQ		/*일련번호*/
+										,PNT_DS_CD		/*포인트구분코드*/
+										,PNT_DS_DT_CD	/*포인트구분상세코드*/
+										,PNT			/*포인트*/
+										,FST_REG_DT		/*최초등록일자*/
+										,FST_USER_ID	/*최초등록자*/
+										,LST_UPD_DT		/*최종수정일자*/
+										,LST_UPD_ID		/*최종수정자*/
+
+									)
+							VALUES (
+										#{CUST_NO},
+										#{ST_DT},
+										(SELECT NVL(MAX(PNT_SEQ),0)
+							 				  FROM CS_CUST_PNT_D 
+							 				  WHERE CUST_NO = #{CUST_NO}
+							 				    AND ST_DT = TO_CHAR(SYSDATE,'yyyyMMdd')) +1,
+										#{PNT_DS_CD},
+										#{PNT_DS_DT_CD},
+										#{PNT},
+										SYSDATE,		  /*최초등록일자*/
+										#{FST_USER_ID},   /*최초등록자*/
+										SYSDATE,			/*최종수정일자*/
+										#{LST_UPD_ID}		/*최종수정일자*/
+									)
+		
+	</insert>
+	
+	<!-- 	회원포인트 테이블 업데이트 (적립) -->
+	<update id="updateCustPntMPurchase" parameterType="CustPntM">
+		UPDATE CS_CUST_PNT_M
+			SET
+				TOT_PNT     = TOT_PNT + #{plusPoint} - #{minusPoint}    /*총포인트*/
+				,RSVG_PNT   = RSVG_PNT + #{plusPoint}  				  	/*적립포인트*/	
+				,US_PNT     = US_PNT + #{minusPoint}					/*사용포인트*/
+				,AVB_PNT    = AVB_PNT + #{plusPoint} - #{minusPoint}	/*가용포인트*/
+				,LST_UPD_DT = SYSDATE
+				,LST_UPD_ID = #{LST_UPD_ID}
+		WHERE
+			CUST_NO = #{CUST_NO}
+	</update>
+	
+	<!-- 	회원포인트 테이블 업데이트 (반품) -->
+	<update id="updateCustPntMReturn" parameterType="CustPntM">
+		UPDATE CS_CUST_PNT_M
+			SET
+				TOT_PNT     = TOT_PNT + #{plusPoint} - #{minusPoint}    /*총포인트*/
+				,RSVG_PNT   = RSVG_PNT + (#{plusPoint} * -1)			/*적립포인트*/	
+				,US_PNT     = US_PNT + (#{minusPoint} * -1)			  	/*사용포인트*/
+				,AVB_PNT    = AVB_PNT + #{plusPoint} - #{minusPoint}	/*가용포인트*/
+				,LST_UPD_DT = SYSDATE
+				,LST_UPD_ID = #{LST_UPD_ID}
+		WHERE
+			CUST_NO = #{CUST_NO}
+	</update>
+	
+	
+	<!-- 반품처리 하기위한 판매내역 조회(CS_SAL01_MT)-->
+	<select id="salHistory" parameterType="CsSal01MtVO" resultType="CsSal01MtVO">
+		SELECT 
+				PRT_CD				/*매장코드 */
+				,SAL_DT				/*판매일자 */
+				,SAL_NO				/*판매번호 */
+				,SAL_TP_CD			/*판매구분코드 */
+				,TOT_SAL_QTY		/*총판매수량*/
+				,TOT_SAL_AMT		/*총판매금액*/
+				,TOT_VOS_AMT		/*총공급가액 */
+				,TOT_VAT_AMT		/*총부가세액*/
+				,CSH_STLM_AMT		/*현금결제금액*/
+				,CRD_STLM_AMT		/*카드결제금액*/
+				,PNT_STLM_AMT		/*포인트사용금액*/
+				,CUST_NO			/*고객번호 */
+				,CRD_NO				/*카드번호*/
+				,VLD_YM				/*유효년월*/
+				,CRD_CO_CD			/*카드회사*/
+				,FST_REG_DT			/*최초등록일자*/
+				,FST_USER_ID		/*최초등록자*/
+				,LST_UPD_DT			/*최종수정일자*/
+				,LST_UPD_ID			/*최종수정자*/
+		FROM CS_SAL01_MT
+		WHERE 1=1
+			AND PRT_CD=#{PRT_CD} 
+			AND SAL_DT=#{SAL_DT} 
+			AND SAL_NO=#{SAL_NO}
+	</select> 
+	
+	
+	<!-- 반품할 상품 
+		 판매상세 내역 조회
+	 -->
+	 <select id="salDtList" parameterType="CsSal01DtVO" resultType="CsSal01DtVO">
+	 	SELECT                              
+			 	PRT_CD	                    /* 매장코드*/
+				,SAL_DT	                    /* 판매일자*/
+				,SAL_NO	                    /* 판매번호*/
+				,SAL_SEQ	                /* 판매일련번호*/
+				,PRD_CD	                    /* 상품코드*/
+				,PRD_CSMR_UPR	            /* 소비자단가*/
+				,SAL_QTY	                /* 판매수량*/
+				,SAL_AMT	                /* 판매금액*/
+				,SAL_VOS_AMT	            /* 판매공급가액*/
+				,SAL_VAT_AMT	            /* 판매부가세액*/
+				,FST_REG_DT	                /* 최초등록일자*/
+				,FST_USER_ID	            /* 최초등록자*/
+				,LST_UPD_DT	                /* 최종수정일자*/
+				,LST_UPD_ID	                /* 최종수정자*/
+	 	FROM CS_SAL01_DT   /*판매상세table*/
+	 		WHERE 1=1 
+	 			AND PRT_CD = #{PRT_CD}  	/*매장코드*/
+	 			AND SAL_DT = #{SAL_DT}  	/*판매일자*/
+	 			AND SAL_NO = #{SAL_NO}  	/*판매번호*/
+	 
+	 </select>
+	 
+	<!-- 재고 업데이트 처리
+		 반품시 해당 상품에 대한 재고 - 처리
+    -->
+	<update id="ivocoMtAdd" parameterType="SdIvco01MtVO">
+		UPDATE SD_IVCO01_MT
+			SET
+				IVCO_QTY = IVCO_QTY + #{QTY}  	/*재고수량        = 기존재고+반품재고*/
+				,LST_UPD_DT = SYSDATE           /*최종수정일자*/
+				,LST_UPD_ID = #{LST_UPD_ID}	   	/*최종수정자*/		
+			WHERE 1=1
+				AND PRT_CD = #{PRT_CD}    		/*매장코드*/
+				AND PRD_CD = #{PRD_CD}    		/*상품코드*/
+	</update>
+	
+	
+	
+	<!-- 트랜잭션 테스트 코드 -->
+	<update id="txTest" parameterType="SdIvco01MtVO">
+		UPDATE SD_IVCO01_MT
+			SET IVCO_QTY = #{IVCO_QTY}
+			WHERE PRT_CD=#{PRT_CD} AND PRD_CD=#{PRD_CD}
+	</update>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+

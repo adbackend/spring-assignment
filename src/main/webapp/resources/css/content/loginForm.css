@@ -1,0 +1,58 @@
+@charset "UTF-8";
+
+
+.loginForm_content{
+	position: relative;
+	background:#f7f8fc;
+	float:left;
+	width: 88%;   /*컨텐츠값 고정*/
+	height: 1100px; /* 컨텐츠값 고정*/
+}
+
+.center{
+	position: relative;
+	position: absolute;
+	top:45%;
+	left:50%;
+	transform: translate(-50%, -50%);
+	width: 400px;
+	background: linear-gradient(to right, #aec9f5, #293e78);
+	font-family: montserrat;
+	padding: 90px;
+}
+
+.center h1{
+	text-align: center;
+	padding: 0 0 20px 0;
+	border-bottom: 1px solid silver;
+}
+
+form .text_field{
+	position: relative;
+	border-bottom: 2px solid #adadad;
+	margin: 30px 0;
+	border: none;
+}
+
+.text_field input{
+	width:94%;
+	height:40px;
+	font-size: 16px;
+	border: none;
+}
+
+
+.text_field label{
+	font-size: 20px;
+}
+
+.pass:hover{
+	text-decoration: underline;
+}
+
+.login_btn{
+	width:94%;
+	height: 44px;
+	font-size: 23px;
+	font-weight: bold ;
+}

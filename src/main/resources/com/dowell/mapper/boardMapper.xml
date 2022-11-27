@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="boardMapper">
+	
+<!-- 	<select id="getTestList" resultType="com.dowell.board.vo.TestVO"> -->
+<!-- 		<![CDATA[ -->
+<!-- 		SELECT rownum rn, cust_no, chg_dt, chg_seq FROM SD_CUST01_HT where rownum <= 10 -->
+<!-- 		]]> -->
+<!-- 	</select> -->
+	
+<!-- 	<resultMap type="HashMap" id="custInfo"> -->
+<!--    <result property="CUST_NO"       	column="CUST_NO"       javaType="String" /> -->
+<!--    <result property="CUST_NM"       	column="CUST_NM"       javaType="String" /> -->
+<!--    <result property="SEX_CD"    		column="SEX_CD"       javaType="String" /> -->
+   
+<!--    <result property="SCAL_YN"    		column="SCAL_YN"       javaType="String" /> -->
+<!--    <result property="BRDY_DT"    		column="BRDY_DT"     javaType="String" /> -->
+<!--    <result property="MRRG_DT"    		column="MRRG_DT"       javaType="String" /> -->
+<!--    <result property="POC_CD"    		column="POC_CD"        javaType="String" /> -->
+<!--    <result property="MBL_NO"    		column="MBL_NO"       javaType="String" /> -->
+<!--    <result property="PSMT_GRC_CD"    	column="PSMT_GRC_CD"        javaType="String" /> -->
+<!--    <result property="EMAIL"    			column="EMAIL"       javaType="String" /> -->
+<!--    <result property="ZIP_CD"    		column="ZIP_CD"       javaType="String" /> -->
+<!--    <result property="ADDR"    			column="ADDR"       javaType="String" /> -->
+<!--    <result property="ADDR_DTL"    		column="ADDR_DTL"       javaType="String" /> -->
+   
+<!--    <result property="CUST_SS_CD"    	column="CUST_SS_CD"       javaType="String" /> -->
+<!--    <result property="CNCL_CNTS"    		column="CNCL_CNTS"       javaType="String" /> -->
+<!--    <result property="JN_PRT_CD"    		column="JN_PRT_CD"       javaType="String" /> -->
+<!--    <result property="PRT_NM"    		column="PRT_NM"       javaType="String" /> -->
+<!--    <result property="EMAIL_RCV_YN"    	column="EMAIL_RCV_YN"       javaType="String" /> -->
+<!--    <result property="SMS_RCV_YN"    	column="SMS_RCV_YN"       javaType="String" /> -->
+<!--    <result property="TM_RCV_YN"    		column="TM_RCV_YN"       javaType="String" /> -->
+<!--    <result property="DM_RCV_YN"    		column="DM_RCV_YN"       javaType="String" /> -->
+   
+<!--    <result property="FST_JS_DT"    		column="FST_JS_DT"       javaType="String" /> -->
+<!--    <result property="JS_DT"    			column="JS_DT"       javaType="String" /> -->
+<!--    <result property="STP_DT"    		column="STP_DT"       javaType="String" /> -->
+<!--    <result property="CNCL_DT"    		column="CNCL_DT"       javaType="String" /> -->
+<!--    <result property="FST_REG_DT"    	column="FST_REG_DT"       javaType="String" /> -->
+<!--    <result property="FST_USER_ID"    	column="FST_USER_ID"       javaType="String" /> -->
+<!--    <result property="LST_UPD_DT"    	column="LST_UPD_DT"       javaType="String" /> -->
+<!--    <result property="LST_UPD_ID"    	column="LST_UPD_ID"       javaType="String" /> -->
+   
+<!--    <result property="TOT_SAL_AMT"    	column="TOT_SAL_AMT"       javaType="String" /> -->
+<!--    <result property="TOT_SAL_MONTH"    	column="TOT_SAL_MONTH"       javaType="String" /> -->
+<!--    <result property="SAL_DT"    		column="SAL_DT"       javaType="String" /> -->
+<!--    <result property="TOT_PNT"    		column="TOT_PNT"       javaType="String" /> -->
+<!--    <result property="RSVG_PNT"    		column="RSVG_PNT"       javaType="String" /> -->
+<!--    <result property="US_PNT"    		column="US_PNT"       javaType="String" /> -->
+   
+<!--    </resultMap> -->
+   
+<!--    	#########고객정보 마지막######## -->
+<!-- 	<select id="custInfo3" parameterType="String" resultMap="custInfo"> -->
+<!-- 			SELECT  -->
+<!-- 			            custMT.CUST_NO -->
+<!-- 			            ,custMT.CUST_NM -->
+<!-- 			            ,custMT.SEX_CD -->
+<!-- 			            ,custMT.SCAL_YN -->
+<!-- 			            ,custMT.BRDY_DT -->
+<!-- 			            ,custMT.MRRG_DT -->
+<!-- 			            ,custMT.POC_CD -->
+<!-- 			            ,custMT.MBL_NO -->
+<!-- 			            ,custMT.PSMT_GRC_CD -->
+<!-- 			            ,custMT.EMAIL -->
+<!-- 			            ,custMT.ZIP_CD -->
+<!-- 			            ,custMT.ADDR -->
+<!-- 			            ,custMT.ADDR_DTL -->
+			            
+<!-- 			            ,custMT.CUST_SS_CD -->
+<!-- 			            ,custMT.CNCL_CNTS -->
+<!-- 			            ,custMT.JN_PRT_CD             /*매장코드*/ -->
+<!-- 			            ,prtMT.PRT_NM                 /*매장명*/ -->
+<!-- 			            ,custMT.EMAIL_RCV_YN -->
+<!-- 			            ,custMT.SMS_RCV_YN -->
+<!-- 			            ,custMT.TM_RCV_YN -->
+<!-- 			            ,custMT.DM_RCV_YN -->
+			            
+<!-- 			            ,custMT.FST_JS_DT -->
+<!-- 			            ,custMT.JS_DT -->
+<!-- 			            ,custMT.STP_DT -->
+<!-- 			            ,custMT.CNCL_DT -->
+<!-- 			            ,custMT.FST_REG_DT -->
+<!-- 			            ,custMT.FST_USER_ID -->
+<!-- 			            ,custMT.LST_UPD_DT -->
+<!-- 			            ,custMT.LST_UPD_ID -->
+			            
+<!-- 			            ,SAL.TOT_SAL_AMT   /*총구매금액*/ -->
+<!-- 			            ,SAL.TOT_SAL_MONTH /*당월구매금액*/ -->
+<!-- 			            ,SAL.SAL_DT /*최종구매일*/ -->
+<!-- 			            ,pointt.TOT_PNT /*총포인트*/ -->
+<!-- 			            ,pointt.RSVG_PNT /*당월포인트*/ -->
+<!-- 			            ,pointt.US_PNT  /*당월사용포인트*/ -->
+<!-- 			FROM CS_CUST01_MT custMT    /*고객관리*/ -->
+<!-- 			INNER JOIN MA_PRT_MT prtMT ON custMT.JN_PRT_CD = prtMT.PRT_CD  /*고객+매장*/ -->
+<!-- 			LEFT OUTER JOIN ( -->
+<!-- 			            SELECT CUST_NO, -->
+<!-- 			                    SUM(CASE WHEN sal_tp_cd = 'SAL' THEN TOT_SAL_AMT            /*총구매금액 시작*/ -->
+<!-- 			                             WHEN sal_tp_cd = 'RTN' THEN TOT_SAL_AMT*-1      -->
+<!-- 			                                ELSE 0 -->
+<!-- 			                             END )AS TOT_SAL_AMT                                  /*총구매금액 끝*/ -->
+<!-- 			                    ,SUM(CASE WHEN  TO_CHAR(SYSDATE,'YYYYMM')=substr(sal_dt,1,6) AND sal_tp_cd = 'SAL' THEN TOT_SAL_AMT      /*당월구매금액 시작*/ -->
+<!-- 			                              WHEN TO_CHAR(SYSDATE,'YYYYMM')=substr(sal_dt,1,6) AND sal_tp_cd = 'RTN' THEN TOT_SAL_AMT*-1 -->
+<!-- 			                                ELSE 0  -->
+<!-- 			                              END )AS TOT_SAL_MONTH /*당월구매금액 끝*/ -->
+<!-- 			                    ,TO_DATE(MAX(SAL_DT),'YYYY-MM-DD')  AS SAL_DT  /*최종구매일 vachar2*/ -->
+<!-- 			            FROM CS_SAL01_MT  -->
+<!-- 			            GROUP BY CUST_NO -->
+<!-- 			) SAL ON custMT.CUST_NO = SAL.CUST_NO -->
+<!-- 			LEFT OUTER JOIN( -->
+<!-- 			        select  -->
+<!-- 			            pntD.cust_No -->
+<!-- 			        ,sum(case when pntD.PNT_DS_CD='100' then pntM.TOT_PNT -->
+<!-- 			                 when pntD.PNT_DS_CD='200' then pntM.TOT_PNT*-1 -->
+<!-- 			                 else 0 -->
+<!-- 			                 end  -->
+<!-- 			            ) as TOT_PNT /*총포인트*/ -->
+<!-- 			        ,sum(case when TO_CHAR(SYSDATE,'yyyymm')=substr(pntD.ST_DT,1,6) AND pntD.PNT_DS_CD='100' THEN pntM.RSVG_PNT -->
+<!-- 			                 when TO_CHAR(SYSDATE,'yyyymm')=substr(pntD.ST_DT,1,6) AND pntD.PNT_DS_CD='200' THEN pntM.RSVG_PNT*-1 -->
+<!-- 			            ELSE 0 -->
+<!-- 			            END -->
+<!-- 			            ) AS RSVG_PNT /*당월포인트*/ -->
+<!-- 			        ,SUM(CASE WHEN TO_CHAR(SYSDATE,'yyyymm')=substr(pntD.ST_DT,1,6) AND pntD.PNT_DS_CD='100' THEN pntM.US_PNT -->
+<!-- 			                    WHEN TO_CHAR(SYSDATE,'yyyymm')=substr(pntD.ST_DT,1,6) AND pntD.PNT_DS_CD='200' THEN pntM.US_PNT*-1 -->
+<!-- 			                    ELSE 0 -->
+<!-- 			                    END) AS US_PNT /*당월사용포인트*/ -->
+<!-- 			        from CS_CUST_PNT_M pntM  -->
+<!-- 			        inner join CS_CUST_PNT_D pntD ON pntD.CUST_NO=pntM.CUST_NO -->
+<!-- 			        GROUP BY  pntD.cust_No -->
+<!-- 			) pointt ON  custMT.CUST_NO = pointt.CUST_NO -->
+<!-- 			WHERE custMT.CUST_NO=#{CUST_NO} -->
+<!-- 	</select> -->
+	
+
+	
+	
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+

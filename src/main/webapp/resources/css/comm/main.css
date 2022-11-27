@@ -1,0 +1,39 @@
+@charset "UTF-8";
+
+*{
+	margin: 0;
+	padding: 0;
+}
+body{
+	margin: 0 0;
+}
+.header{
+	background: #183770;
+	height: 120px;
+}
+
+
+.main_content div{
+	background: #91c2ab;
+	width: 100%;
+	height: 520px;
+}
+
+.main_content .nav{
+	width: 30%;
+	float:left;
+	
+}
+
+.main_content .content{
+	background: red;
+	float:left;
+	width: 70%;
+}
+
+
+.boardList_wrap .footer{
+	background: gray;
+	position: relatiev;
+	height: 720px;
+}

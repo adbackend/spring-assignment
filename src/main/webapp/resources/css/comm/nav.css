@@ -1,0 +1,19 @@
+@charset "UTF-8";
+
+.nav{
+	width: 12%;
+	height: 1100px;
+	
+	float:left;
+	background: #a9b8cf;
+}
+
+.navbar a {
+	text-decoration: none;
+	color:#f2f4f7;
+	
+}
+
+.nav_menu li{
+	text-align : center;
+}
